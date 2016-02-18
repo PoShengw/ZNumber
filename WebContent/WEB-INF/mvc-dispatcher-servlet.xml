@@ -1,0 +1,76 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<!-- Specifying base package of the Components like Controller, Service, 
+		DAO -->
+	<context:component-scan base-package="com.number.*" />
+	<mvc:annotation-driven />
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+
+	<!-- DataSource -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/company" />
+		<property name="username" value="root" />
+		<property name="password" value="1234" />
+
+	</bean>
+	
+	
+		<!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.number.entity.Employee</value>
+				<value>com.number.entity.Department</value>
+			</list>
+		</property>
+		
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+		<!-- property name="packagesToScan" value=""></property> -->
+	</bean>
+	
+		<!-- Transaction -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	
+	
+	<!-- MVC -->
+	<!--  View: /approot<PREFIX>VIEWNAME<SUFFIX> -->
+    <!--  View: /approot/WEB-INF/views/addBook.jsp -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix"> <value>/WEB-INF/views/</value> </property>
+    <property name="suffix"> <value>.jsp</value></property>
+    </bean>  
+
+
+                              
+	<bean id="depService" class="com.number.service.DepartmentServiceImpl">
+	</bean>
+
+
+	
+    
+	
+
+</beans>
